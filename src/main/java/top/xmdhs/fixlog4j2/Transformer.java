@@ -13,18 +13,16 @@ import java.security.ProtectionDomain;
 public class Transformer implements ClassFileTransformer {
     @Override
     public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
-        if (className.replace("/", ".").equals("org.apache.logging.log4j.core.lookup.JndiLookup"))
+        if (className.equals("org/apache/logging/log4j/core/lookup/JndiLookup"))
             try {
-                System.out.println("Successfully found JndiLookup, ready to repair it ...");
-                ClassPool defaultClassPool = ClassPool.getDefault();
-                defaultClassPool.appendClassPath(new LoaderClassPath(loader));
-                CtClass jndiLookupClass = defaultClassPool.makeClass(new ByteArrayInputStream(classfileBuffer));
-                CtMethod lookup = jndiLookupClass.getDeclaredMethod("lookup");
-                lookup.setBody("{return null;}");
-                System.out.println("Patch of JndiLookup successfully applied.");
-                return jndiLookupClass.toBytecode();
+                ClassPool p = ClassPool.getDefault();
+                p.appendClassPath(new LoaderClassPath(loader));
+                CtClass c = p.makeClass(new ByteArrayInputStream(classfileBuffer));
+                CtMethod lookup = c.getDeclaredMethod("lookup");
+                lookup.setBody("return null;");
+                return c.toBytecode();
             } catch (Exception e) {
-                System.out.println("Unable to apply the patch, is there an error?" + e.getMessage());
+                System.out.println(e.getMessage());
             }
         return null;
     }
