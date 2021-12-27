@@ -1,13 +1,11 @@
 package top.xmdhs.fixlog4j2;
 
-import org.objectweb.asm.ClassVisitor;
-import org.objectweb.asm.MethodVisitor;
-import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.*;
 
 
-public class MethodChangeClassAdapter extends ClassVisitor {
+public class MethodChangeClassAdapter extends ClassVisitor implements Opcodes {
     public MethodChangeClassAdapter(ClassVisitor cv) {
-        super(Opcodes.ASM4, cv);
+        super(Opcodes.ASM5, cv);
     }
 
     @Override
@@ -21,4 +19,5 @@ public class MethodChangeClassAdapter extends ClassVisitor {
         }
         return null;
     }
+
 }
