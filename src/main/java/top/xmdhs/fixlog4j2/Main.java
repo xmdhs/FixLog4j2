@@ -14,10 +14,17 @@ public class Main {
             @Override
             public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined, ProtectionDomain protectionDomain, byte[] classfileBuffer) throws IllegalClassFormatException {
                 if (className.equals("org/apache/logging/log4j/core/lookup/JndiLookup")) {
-                    ClassReader cr = new ClassReader(classfileBuffer);
-                    ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
-                    cr.accept(new MethodChangeClassAdapter(cw), ClassReader.EXPAND_FRAMES);
-                    return cw.toByteArray();
+                    try {
+                        System.out.println("Find JndiLookup.class, try to fix.");
+                        ClassReader cr = new ClassReader(classfileBuffer);
+                        ClassWriter cw = new ClassWriter(cr, ClassWriter.COMPUTE_MAXS);
+                        cr.accept(new MethodChangeClassAdapter(cw), ClassReader.EXPAND_FRAMES);
+                        byte[] b = cw.toByteArray();
+                        System.out.println("Fixed.");
+                        return b;
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                 }
                 return null;
             }
