@@ -59,6 +59,12 @@
                             </manifestEntries>
                         </transformer>
                     </transformers>
+                    <relocations>
+                        <relocation>
+                            <pattern>org.objectweb</pattern>
+                            <shadedPattern>top.xmdhs.lib.org.objectweb</shadedPattern>
+                        </relocation>
+                    </relocations>
 
                 </configuration>
                 <executions>
